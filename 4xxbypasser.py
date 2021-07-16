@@ -107,4 +107,8 @@ def main():
 
 main()
 
+# A FAIRE :
+# ajouts des autres arguments, user-agent, proxy, params
+# gérer les payloads /? et /?? avec cURL
+# optimiser le code
 
