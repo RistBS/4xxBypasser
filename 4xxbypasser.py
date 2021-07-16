@@ -87,7 +87,7 @@ def payload_tester():
         print("Connection refused")
         sleep(12)
 
-    positive = str(401, str(200))
+    positive = 401, 200, 300
     for positive in r.status_code:
         print("\n\033[91m[!]\033[0m résultat trouvé. {}/" + str(count).format(str(positive)))
 #def firefox():
