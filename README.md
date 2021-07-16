@@ -6,8 +6,9 @@ Liscence : [MIT license](LICENSE)
 Creator
 =
 RistBS
+-
 [![Devs](https://img.shields.io/badge/Made_By-RistBS-blue.svg)]() 
-<img src="https://contributors-img.web.app/image?repo=RistBS/4xxBypasser" />
+
 
 Installation :
 =
