@@ -21,6 +21,6 @@ Arguments/options disponibles :
 - __Path__ : le chemin qui renvoie le code 4xx
 
 Format pour les args Proxy et Params :  
+
 Params > {'p1':'hello', 'p2':'world'}
--
 Proxy > {"http": "proxy"}
