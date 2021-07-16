@@ -5,9 +5,6 @@ Liscence : [MIT license](LICENSE)
 
 Creator
 =
-RistBS
-
-
 [![Devs](https://img.shields.io/badge/Made_By-RistBS-blue.svg)]() 
 
 
