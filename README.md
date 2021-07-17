@@ -15,7 +15,7 @@ Installation :
     cd 4xxBypasser && sudo pip3 install -r requirements.txt
     sudo python3 4xxbypasser.py
 
-![](https://imgur.com/a/56X2tF4.png)
+![](https://imgur.com/46hyY15.png)
 
 Arguments/options disponibles :
 
