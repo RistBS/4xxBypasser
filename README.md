@@ -14,7 +14,7 @@ Installation :
     git clone https://github.com/RistBS/4xxBypasser
     cd 4xxBypasser && sudo pip3 install -r requirements.txt
     sudo python3 4xxbypasser.py
--
+
 ![](https://imgur.com/a/56X2tF4.png)
 
 Arguments/options disponibles :
