@@ -5,6 +5,15 @@
 # optimiser le code
 # --------------------------------
 
+######################################
+# MIT LICENSE @RistBS - 2021
+# Author and contributor : RistBS, Elieroc
+# RistBS : https://github.com/RistBS
+# Elieroc : https://github.com/Elieroc
+######################################
+
+
+
 from banner import banner
 
 from sys import exc_info
@@ -67,7 +76,7 @@ def payload_tester():
     print(f"Parameter : {params}")
     print(f"Proxy : {proxies}")
     print(f"User-Agent : {user_agent}")
-    
+
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     requests.packages.urllib3.disable_warnings()
     payloads = ['%2e', '/.', '..;/', '//', '/./', '/']
