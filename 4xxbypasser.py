@@ -37,8 +37,8 @@ def args_manager():
     parser.add_argument('--params', help='give the necessary parameters to have a valid answer')
     parser.add_argument('--proxy', help='use proxies to avoid requests limit')
     parser.add_argument('--header', help='add headers')
-    parser.add_argument('--batchtrue', action='store_true', help='responds positively to any request')
-    parser.add_argument('--batchfalse', action='store_true', help='responds negatively to any request')
+    parser.add_argument('--batchtrue', action='store_true', help='responds positively to any questions')
+    parser.add_argument('--batchfalse', action='store_true', help='responds negatively to any questions')
     parser.add_argument('--useragent', help='use another user-agent than the one defined by python')
     parser.add_argument('-o', '--output', type=str, help='save the results in a file')
     global args
