@@ -36,7 +36,9 @@ def args_manager():
     parser.add_argument('--path', help='give the path which has the answer 4xx')
     parser.add_argument('--params', help='give the necessary parameters to have a valid answer')
     parser.add_argument('--proxy', help='use proxies to avoid requests limit')
-    parser.add_argument('--batch', action='store_true', help='responds positively to any request')
+    parser.add_argument('--header', help='add headers')
+    parser.add_argument('--batchtrue', action='store_true', help='responds positively to any request')
+    parser.add_argument('--batchfalse', action='store_true', help='responds negatively to any request')
     parser.add_argument('--useragent', help='use another user-agent than the one defined by python')
     parser.add_argument('-o', '--output', type=str, help='save the results in a file')
     global args
@@ -57,12 +59,15 @@ def output(response, *args, **kwargs):
     headers = lambda d: '\n'.join(f'{k}: {v}' for k, v in d.items()) 
     print(textwrap.dedent('''
         ---------------- request ----------------
-        \033[92m{req.method}\033[0m {req.url}
+        \033[92m{req.method}\033[0m \033[102m\033[94m{req.url}\033[0m
         {reqhdrs}
 
         {req.body}
         ---------------- response ----------------
-        \033[91m{res.status_code}\033[0m {res.reason} {res.url}
+        \033[91m{res.status_code}\033[0m {res.reason} \033[102m\033[94m{res.url}\033[0m
+
+        headers :
+
         \033[92m{reshdrs}\033[0m
     ''').format(req=response.request, res=response, reqhdrs=headers(response.request.headers), reshdrs=headers(response.headers),))
 
@@ -73,6 +78,9 @@ def payload_tester():
     proxies = args.proxy
     user_agent = {'User-agent': '{}'.format(args.useragent)}
 
+    header = {'Authorization': '{}'.format(args.header)}
+    print(f"header : {header}")
+    
     print(f"Parameter : {params}")
     print(f"Proxy : {proxies}")
     print(f"User-Agent : {user_agent}")
@@ -87,27 +95,30 @@ def payload_tester():
             sleep(3)
             if args.url and args.path:
                 link = args.url + payload + args.path
-                r = requests.get(link, params=params, verify=False, proxies=proxies, hooks={'response': output}, headers=user_agent)
+                r = requests.get(link, params=params, verify=False, proxies=proxies, hooks={'response': output}, headers=header)
 
                 positives_numbers_code = [200, 300, 102]
                 negatives_numbers_code = [500, 404, 403]
                 all_number_code = positives_numbers_code + negatives_numbers_code
                 for code_number in positives_numbers_code:
                     if r.status_code == code_number:
-                        print(f"[+] True with code {code_number} for : {link}")
+                        print(f"\033[92m[+]\033[0m True with code {code_number} for : {link}")
                 for code_number in negatives_numbers_code:
                     if r.status_code == code_number:
-                        print(f"[+] False with code {code_number} for : {link}")
+                        print(f"\033[92m[+]\033[0m False with code {code_number} for : {link}")
                     elif r.status_code == 401:
-                        print(f"[?] it may be a True result but some parameters was not set")
+                        print(f"\033[93m[?]\033[0m it may be a True result but some parameters was not set")
 
-                if args.batch:
+                if args.batchtrue:
                     firefox_launcher(link, True)
+                elif args.batchfalse:
+                    print("\033[91m[!]\033[0m Firefox will not be launch for this URL")
                 else:
                     firefox_launcher(link)
                         
                 print("URL :" + args.url + payload + args.path) # 2x args.path ( url -(here)- payload )
                 print("payload : \033[91m{}\033[0m".format(payload))
+                print("\033[101m\n###########################################################################\033[0m")
                 count = len(payloads)
 
         #for positives_numbers_code in r.status_code:
@@ -147,7 +158,7 @@ def firefox_launcher(link, batch=False):
         if launch == 'Y' or launch == 'y':
             os.system(f'firefox {link}')
         else:
-            print("[!] Firefox will not be launch for this URL")
+            print("\033[91m[!]\033[0m Firefox will not be launch for this URL")
 
 
 def main():
