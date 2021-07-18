@@ -40,7 +40,7 @@ def args_manager():
     parser.add_argument('--batchtrue', action='store_true', help='responds positively to any questions')
     parser.add_argument('--batchfalse', action='store_true', help='responds negatively to any questions')
     parser.add_argument('--useragent', help='use another user-agent than the one defined by python')
-    parser.add_argument('-o', '--output', type=str, help='save the results in a file')
+   # parser.add_argument('-o', '--output', type=str, help='save the results in a file')
     global args
     args = parser.parse_args()
 
@@ -129,8 +129,8 @@ def payload_tester():
         print(code_number)
         print(all_number_code)
 
-        if args.output:
-            output_file()
+       # if args.output:
+        #    output_file()
         
     except requests.exceptions.ConnectionError:
         print("Connection refused")
@@ -140,15 +140,15 @@ def payload_tester():
     except requests.exceptions.RequestException or requests.exceptions.HTTPError as e:
         raise SystemExit(e)
 
-def output_file():
-    f_output = output(response=output)
-    file = open(args.output)
-    try:
-        with open(args.output, 'w') as file:
-            file.write(f_output)
-            file.close()
-    except IOError as e:
-        print("I/O error({0}): {1}".format(e.errno, e.strerror))
+#def output_file():
+    #f_output = output(response=output)
+    #file = open(args.output)
+    #try:
+      #  with open(args.output, 'w') as file:
+     #       file.write(f_output)
+    #        file.close()
+   # except IOError as e:
+     #   print("I/O error({0}): {1}".format(e.errno, e.strerror))
 
 def firefox_launcher(link, batch=False):
     if batch == True :
