@@ -37,10 +37,10 @@ def args_manager():
     parser.add_argument('--params', help='give the necessary parameters to have a valid answer')
     parser.add_argument('--proxy', help='use proxies to avoid requests limit')
     parser.add_argument('--header', help='add headers')
-    parser.add_argument('--batchtrue', action='store_true', help='responds positively to any questions')
-    parser.add_argument('--batchfalse', action='store_true', help='responds negatively to any questions')
+    parser.add_argument('--batchtrue', action='store_true', help='responds positively to any request')
+    parser.add_argument('--batchfalse', action='store_true', help='responds negatively to any request')
     parser.add_argument('--useragent', help='use another user-agent than the one defined by python')
-   # parser.add_argument('-o', '--output', type=str, help='save the results in a file')
+    parser.add_argument('-o', '--output', type=str, help='save the results in a file')
     global args
     args = parser.parse_args()
 
@@ -87,7 +87,7 @@ def payload_tester():
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     requests.packages.urllib3.disable_warnings()
-    payloads = ['%2e', '/.', '..;/', '//', '/./', '/']
+    payloads = ['%2e', '/.', '..;/', '//', '/./', '/', '..']
 
     try:
         for payload in payloads:
@@ -95,7 +95,7 @@ def payload_tester():
             sleep(3)
             if args.url and args.path:
                 link = args.url + payload + args.path
-                r = requests.get(link, params=params, verify=False, proxies=proxies, hooks={'response': output}, headers=header)
+                r = requests.get(link, params=params, verify=False, proxies=proxies, hooks={'response': output})
 
                 positives_numbers_code = [200, 300, 102]
                 negatives_numbers_code = [500, 404, 403]
@@ -106,9 +106,6 @@ def payload_tester():
                 for code_number in negatives_numbers_code:
                     if r.status_code == code_number:
                         print(f"\033[92m[+]\033[0m False with code {code_number} for : {link}")
-                    elif r.status_code == 401:
-                        print(f"\033[93m[?]\033[0m it may be a True result but some parameters was not set")
-
                 if args.batchtrue:
                     firefox_launcher(link, True)
                 elif args.batchfalse:
@@ -129,8 +126,8 @@ def payload_tester():
         print(code_number)
         print(all_number_code)
 
-       # if args.output:
-        #    output_file()
+        if args.output:
+            output_file()
         
     except requests.exceptions.ConnectionError:
         print("Connection refused")
@@ -140,15 +137,15 @@ def payload_tester():
     except requests.exceptions.RequestException or requests.exceptions.HTTPError as e:
         raise SystemExit(e)
 
-#def output_file():
-    #f_output = output(response=output)
-    #file = open(args.output)
-    #try:
-      #  with open(args.output, 'w') as file:
-     #       file.write(f_output)
-    #        file.close()
-   # except IOError as e:
-     #   print("I/O error({0}): {1}".format(e.errno, e.strerror))
+def output_file():
+    f_output = output(response=output)
+    file = open(args.output)
+    try:
+        with open(args.output, 'w') as file:
+            file.write(f_output)
+            file.close()
+    except IOError as e:
+        print("I/O error({0}): {1}".format(e.errno, e.strerror))
 
 def firefox_launcher(link, batch=False):
     if batch == True :
