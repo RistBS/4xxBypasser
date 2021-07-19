@@ -120,11 +120,6 @@ def payload_tester():
 
         #for positives_numbers_code in r.status_code:
          #   print(f"\n\033[91m[!]\033[0m Résultat trouvé. {str(positives_numbers_code)}/" + str(count))
-        code_number = str(code_number)
-        o = sum(int(n) for n in code_number)
-        print(o)
-        print(code_number)
-        print(all_number_code)
 
         if args.output:
             output_file()
