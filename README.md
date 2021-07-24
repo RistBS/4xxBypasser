@@ -29,9 +29,10 @@ Params > {'p1':'hello', 'p2':'world'}
 
 Proxy > {"http": "proxy"}
 
-=
-Alias Traversal Attack :
 
+
+Alias Traversal Attack :
+=
 Vulnerable code :
 ```nginx
 location /admin {
