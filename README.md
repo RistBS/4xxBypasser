@@ -31,7 +31,7 @@ Proxy > {"http": "proxy"}
 
 
 
-Alias Traversal Attack :
+Nginx Alias Traversal Attack :
 =
 Vulnerable code :
 ```nginx
