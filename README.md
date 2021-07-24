@@ -28,3 +28,16 @@ Format pour les args Proxy et Params :
 Params > {'p1':'hello', 'p2':'world'}
 
 Proxy > {"http": "proxy"}
+
+=
+Alias Traversal Attack :
+
+Vulnerable code :
+```nginx
+location /admin {
+    alias /var/www/site/data;
+}
+```
+URL with a Payload : http://site.com/admin../<path/file>
+<path/file> = a directory from /site and a file in this dir
+
