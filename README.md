@@ -40,5 +40,6 @@ location /admin {
 }
 ```
 URL with a Payload : http://site.com/admin../<path/file>
+-
 <path/file> = a directory from /site and a file in this dir
 
