@@ -1,5 +1,5 @@
 # 4xxBypasser
-un outil pour bypasser les code d'états HTTP négatif coté client ( 4xx )
+a tool to bypass negative HTTP status codes on the client side (4xx)
 
 Liscence : [MIT license](LICENSE)
 
@@ -17,14 +17,14 @@ Installation :
 
 ![](https://imgur.com/46hyY15.png)
 
-Arguments/options disponibles :
+Arguments / options available:
+- __Proxy__: put http proxies (can avoid connection refusals)
+- __Params__: add parameters if ever the status code indicates it (401 for example)
+- __Path__: the path that returns the 4xx code
 
-- __Proxy__ : mettez des proxies http ( peut éviter des refus de connexion )
-- __Params__ : ajoutez des paramètres si jamais le code d'états l'indique ( 401 par ex )
-- __Path__ : le chemin qui renvoie le code 4xx
 
-Format pour les args Proxy et Params :  
-
+Format for the args Proxy et Params :  
+-
 Params > {'p1':'hello', 'p2':'world'}
 
 Proxy > {"http": "proxy"}
