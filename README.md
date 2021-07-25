@@ -18,6 +18,7 @@ Installation :
 ![](https://imgur.com/46hyY15.png)
 
 Arguments / options available:
+-
 - __Proxy__: put http proxies (can avoid connection refusals)
 - __Params__: add parameters if ever the status code indicates it (401 for example)
 - __Path__: the path that returns the 4xx code
