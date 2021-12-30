@@ -41,6 +41,6 @@ location /admin {
 }
 ```
 URL with a Payload : http://site.com/admin../<path/file>
--
+
 
 
