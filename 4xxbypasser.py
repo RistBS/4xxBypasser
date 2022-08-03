@@ -87,7 +87,7 @@ def payload_tester():
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     requests.packages.urllib3.disable_warnings()
-    payloads = ['%2e', '/.', '..;/', '//', '/./', '/', '..']
+    payloads = ['%2e', '/.', '..;/', '//', '/./', '/', '..', '.%%32%65']
 
     try:
         for payload in payloads:
